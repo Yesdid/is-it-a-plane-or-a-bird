@@ -3,6 +3,11 @@ import certifi
 import time
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
+from typing import Literal
+from pydantic import BaseModel, Field
+from PIL import Image
+import json
 from google.genai.errors import ServerError
 
 # Force Python to find security certificates on macOS
@@ -21,6 +26,13 @@ if not os.environ.get("GEMINI_API_KEY"):
 
 # Initialize the client securely
 client = genai.Client()
+
+class PictureAnalysis(BaseModel):
+    birdorplane: Literal["bird", "aircraft", "other"] = Field(
+        description="Classify whether the primary object in the image is a bird, aircraft, or neither"
+    )
+
+img = Image.open("../85825096-plane-in-the-sky-shooted-from-the-ground.jpg")
 
 print("Sending request to Gemini API...")
 
@@ -44,3 +56,20 @@ for attempt in range(3):
     except Exception as e:
         print(f"Unexpected Error: {e}")
         break
+
+response = client.models.generate_content(
+    model='gemini-3.8-flash',
+    contents=[
+        img, 
+        "Classify whether the primary object in the image is a bird, aircraft, or neither"
+    ],
+    config=types.GenerateContentConfig(
+        response_mime_type="application/json",
+        response_schema=PictureAnalysis,
+    )
+)
+
+data = json.loads(response)
+result = data["birdorplane"]
+print("\n--- Response ---")
+print(response.text)
