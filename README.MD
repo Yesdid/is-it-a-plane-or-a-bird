@@ -42,11 +42,11 @@ In root folder run:
 - Create / set up .env file in project folder (see section named "Setting up .env")
 
 Running the backend:
-- Run: python gemini/app.py
+- Run: python api/app.py
 
 Running the frontend:
 - Open a new terminal
-- Run: start front-end.html
+- Run: start ui/IFO.html
 
 ### For macOS:
 In root folder run:
@@ -58,8 +58,8 @@ In root folder run:
 - Create / set up .env file in project folder (see section named "Setting up .env")
 
 Running the backend:
-- Run: ./venv/bin/python gemini/app.py
+- Run: ./venv/bin/python api/app.py
 
 Running the frontend:
 - Open a new terminal
-- Run: open front-end.html
+- Run: open ui/IFO.html
