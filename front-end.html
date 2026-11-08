@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Is It a Plane or a Bird?</title>
+    </head>
+    <body>
+        <h1>Is it a plane? Is it a bird? Neither? Lets find out!</h1>
+        <div class ="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Take a Photo!</h2>
+                    <label for="camera-source" class="camera-btn">📸 Open Camera</label>
+                    <input type="file" id="camera-source" accept="image/*" capture="environment" style="display: none;">
+                </div>
+                <div class="col-md-6">
+                    <h2>Prediction Result</h2>
+                    <div id="result"></div>
+                </div>
+            </div> 
+
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                margin: 20px;
+            }
+            .container {
+                display: flex;
+                justify-content: space-around;
+                margin-top: 20px;
+            }
+            .col-md-6 {
+                width: 45%;
+            }
+            #result {
+                margin-top: 20px;
+                font-size: 1.2em;
+                color: #333;
+            }
+            .camera-btn {
+                display: inline-block;
+                padding: 12px 24px;
+                background-color: #007bff;
+                color: white;
+                font-size: 16px;
+                font-weight: bold;
+                border-radius: 5px;
+                cursor: pointer;
+                text-align: center;
+            }
+            .camera-btn:hover {
+                background-color: #0056b3;
+            }
+        </style>
+
+        <!-- implementing js for backend-->>
+        <script>
+            const cameraInput = document.getElementById('camera-source');
+            const resultContainer = document.getElementById('result');
+
+            cameraInput.addEventListener('change', async (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                // 1. Pack the selected image into multipart form-data
+                const formData = new FormData();
+                formData.append('image', file);
+
+                // 2. Visual status indicator
+                resultContainer.innerHTML = '<p class="text-primary">Uploading and processing...</p>';
+
+                try {
+                    // 3. Send request to backend
+                    const response = await fetch('http://127.0.0.1:5000/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+                    }
+
+                    // 4. Render prediction output
+                    const data = await response.json();
+                    resultContainer.innerHTML = `<strong>Prediction:</strong> ${data.birdorplane}`;
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    resultContainer.innerHTML = `
+                        <div class="alert alert-danger">
+                            <strong>Error:</strong> ${error.message}
+                        </div>
+                    `;
+                }
+            });
+        </script>
+    </body>
+</html>
