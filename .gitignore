@@ -2,4 +2,4 @@
 venv/
 __pyache__/
 *.pyc
-api/__pycache__/
+**/api/__pycache__/
