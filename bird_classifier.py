@@ -13,7 +13,7 @@ model = AutoModelForImageClassification.from_pretrained("chriamue/bird-species-c
 
 def analyze_image(img): 
     #open image
-    image = Image.open(img) #ADD STUFF TO INTEGRATE IMAGE STUFF LATER
+    image = Image.open(img)
 
     #convert image to model input
     inputs = processor(images=image, return_tensors="pt")
