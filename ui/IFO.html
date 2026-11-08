@@ -14,8 +14,6 @@
 
 <body>
     <main class="main-container">
-
-        <!-- INTRODUCTION -->
         <section class="hero">
             <h1>
                 It's a plane!<br>
@@ -23,32 +21,21 @@
                 It's a ... 🛸
             </h1>
         </section>
-
-        <!-- MAIN CONTENT -->
         <section class="content-grid">
-
-            <!-- IMAGE UPLOAD SECTION -->
             <div class="panel upload-panel">
-
                 <div class="panel-heading">
                     <div>
                         <p class="section-number">UPLOAD AN UFO</p>
                         <h2>Take a Photo</h2>
                     </div>
                 </div>
-
                 <label for="camera-source" class="upload-area">
-
                     <div class="upload-icon">📸</div>
-
                     <span class="camera-btn">Open Camera</span>
-
                     <span class="upload-hint">
                         Supports JPG, PNG and other image formats
                     </span>
-
                 </label>
-
                 <input
                     type="file"
                     id="camera-source"
@@ -56,114 +43,67 @@
                     capture="environment"
                     hidden
                 >
-
-                <!-- IMAGE PREVIEW -->
                 <div id="image-preview" class="image-preview hidden">
-
                     <div class="preview-heading">
                         <h3>Uploaded Image</h3>
                     </div>
-
                     <img id="preview-img" src="" alt="Uploaded image preview">
-
                 </div>
-
             </div>
-
-
-            <!-- RESULTS SECTION -->
             <div class="panel results-panel">
-
                 <div class="panel-heading">
                     <div>
                         <p class="section-number">RESULTS</p>
                         <h2>Prediction Results</h2>
                     </div>
                 </div>
-
                 <p class="panel-description">
                     UFO results will appear here.
                 </p>
-
-                <!-- EMPTY STATE -->
                 <div id="empty-state" class="empty-state">
-
                     <div class="empty-icon">☁️</div>
-
                     <h3>Nothing to see yet</h3>
-
                     <p>Upload a photo to get started.</p>
-
                 </div>
-
-                <!-- LOADING STATE -->
                 <div id="loading-state" class="loading-state hidden">
-
                     <div class="spinner"></div>
-
                     <h3>Analyzing your image...</h3>
-
                     <p>AI is examining your photo. This may take a moment.</p>
-
                 </div>
-
-                <!-- ERROR STATE -->
                 <div id="error-state" class="error-state hidden">
                     <h3>Something went wrong</h3>
                     <p id="error-message"></p>
                 </div>
-
-                <!-- RESULTS -->
                 <div id="result" class="result hidden">
-
                     <div class="prediction-box">
                         <p class="result-label">IDENTIFICATION</p>
                         <h2 id="prediction"></h2>
                         <p id="prediction-description"></p>
                     </div>
-
-                    <!-- NEARBY AIRCRAFT -->
                     <div id="aircraft-section" class="data-section hidden">
-
                         <div class="data-heading">
                             <h3>Nearby Aircraft</h3>
                             <span id="aircraft-count" class="count-badge">0</span>
                         </div>
-
                         <div id="aircraft-list"></div>
-
                     </div>
-
-                    <!-- BIRD PREDICTIONS -->
                     <div id="bird-section" class="data-section hidden">
-
                         <div class="data-heading">
                             <h3>Bird Predictions</h3>
                             <span id="bird-count" class="count-badge">0</span>
                         </div>
-
                         <div id="bird-list"></div>
-
                     </div>
-
-                    <!-- OTHER -->
                     <div id="other-section" class="data-section hidden">
                         <p>No bird or aircraft was identified in this image.</p>
                     </div>
-
                 </div>
-
             </div>
-
         </section>
-
         <footer>
             <p>Identify Flying Objects · Powered by Gemini, OpenSky, and Bird Species Classifier</p>
         </footer>
-
     </main>
-
     <script src="IFO.js"></script>
-
 </body>
 </html>
