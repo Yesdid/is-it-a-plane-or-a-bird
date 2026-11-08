@@ -1,4 +1,4 @@
-### Title: Is It a Plane or a Bird?
+# Title: Is It a Plane or a Bird?
 
 ## Authors: 
 - Shriya Shah
@@ -9,7 +9,7 @@
 ## Description:
 This program analyzes an image of a flying object and tells you if its a bird, plane, or neither! 
 
-# Process:
+## Process:
 - Take image
 - Use gemini to make sure not random thing, either bird or plane
 - Scan for plane data
@@ -17,7 +17,7 @@ This program analyzes an image of a flying object and tells you if its a bird, p
 - If no planes/image doesnt match, send to bird classifier
 - Bird classifier checks, prints bird info + facts from gemini
 
-# Setting up .env:
+## Setting up .env:
 .env.example --- copy this into .env using:
 - cp .env.example .env
 - In .env, replace enter_id and enter_key with your your own keys:
@@ -29,9 +29,9 @@ This program analyzes an image of a flying object and tells you if its a bird, p
         - Follow steps to create an API key
         - Copy the API key and paste it in .env where it says "enter_key" (replace it)
 
-# Steps to run program:
+## Steps to run program:
 
->For Windows:
+### For Windows:
 - In root folder run:
     - python -m venv venv
     - source venv/Scripts/activate
@@ -47,7 +47,7 @@ This program analyzes an image of a flying object and tells you if its a bird, p
     - Open a new terminal
     - Run: start front-end.html
 
->For macOS:
+### For macOS:
 - In root folder run:
     - python3 -m venv venv
     - source venv/bin/activate
