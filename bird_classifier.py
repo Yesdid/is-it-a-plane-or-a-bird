@@ -1,22 +1,25 @@
 #import python imaging library. to open and manipulate image files
 from PIL import Image
 
-#import torch. framework that runs model
-import torch 
+from functools import lru_cache
 
-#import feature extractor and image classification auto mode 
-from transformers import AutoImageProcessor, AutoModelForImageClassification
 
-#declare variables for extractor and model. downloads config files and neural network
-processor = AutoImageProcessor.from_pretrained("chriamue/bird-species-classifier")
-model = AutoModelForImageClassification.from_pretrained("chriamue/bird-species-classifier")
+@lru_cache(maxsize=1)
+def _load_model():
+    # Load the model on the first bird request rather than while Flask starts.
+    import torch
+    from transformers import AutoImageProcessor, AutoModelForImageClassification
 
-def analyze_image(img): 
-    #open image
-    image = Image.open(img)
+    processor = AutoImageProcessor.from_pretrained("chriamue/bird-species-classifier")
+    model = AutoModelForImageClassification.from_pretrained("chriamue/bird-species-classifier")
+    model.eval()
+    return torch, processor, model
+
+def analyze_image(image: Image.Image):
+    torch, processor, model = _load_model()
 
     #convert image to model input
-    inputs = processor(images=image, return_tensors="pt")
+    inputs = processor(images=image.convert("RGB"), return_tensors="pt")
 
     #run model without gradient tracking
     with torch.no_grad():

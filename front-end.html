@@ -36,6 +36,7 @@
                 margin-top: 20px;
                 font-size: 1.2em;
                 color: #333;
+                white-space: pre-wrap;
             }
             .camera-btn {
                 display: inline-block;
@@ -53,10 +54,50 @@
             }
         </style>
 
-        <!-- implementing js for backend-->>
         <script>
         const cameraInput = document.getElementById('camera-source');
         const resultContainer = document.getElementById('result');
+
+        function addTextElement(parent, tagName, text) {
+            const element = document.createElement(tagName);
+            element.textContent = text;
+            parent.appendChild(element);
+            return element;
+        }
+
+        function renderResult(data) {
+            resultContainer.replaceChildren();
+            addTextElement(resultContainer, 'h3', `Prediction: ${data.birdorplane}`);
+
+            if (data.birdorplane === 'aircraft') {
+                const flights = data.nearby_aircraft || [];
+                addTextElement(resultContainer, 'h3', `Nearby Aircraft (${flights.length})`);
+
+                flights.forEach((flight) => {
+                    const card = document.createElement('div');
+                    card.className = 'flight-card';
+                    addTextElement(card, 'h4', flight.callsign || 'Unknown callsign');
+                    addTextElement(card, 'p', `Latitude: ${flight.latitude ?? 'Unknown'}`);
+                    addTextElement(card, 'p', `Longitude: ${flight.longitude ?? 'Unknown'}`);
+                    addTextElement(card, 'p', `Altitude: ${flight.altitude_ft ?? flight.altitude ?? 'Unknown'} ft`);
+                    addTextElement(card, 'p', `Speed: ${flight.speed_mph ?? flight.speed ?? 'Unknown'} mph`);
+                    addTextElement(card, 'p', `Category: ${flight.category ?? 'Unknown'}`);
+                    resultContainer.appendChild(card);
+                });
+
+                if (flights.length === 0) {
+                    addTextElement(resultContainer, 'p', 'No nearby aircraft found.');
+                }
+            } else if (data.birdorplane === 'bird') {
+                const birds = data.bird_predictions || {};
+                addTextElement(resultContainer, 'h3', `Bird Predictions (${Object.keys(birds).length})`);
+                Object.entries(birds).forEach(([name, confidence]) => {
+                    addTextElement(resultContainer, 'p', `${name}: ${Number(confidence).toFixed(1)}%`);
+                });
+            } else {
+                addTextElement(resultContainer, 'p', data.message || 'No bird or aircraft was identified.');
+            }
+        }
 
         cameraInput.addEventListener('change', async (event) => {
             const file = event.target.files[0];
@@ -73,53 +114,15 @@
                     body: formData
                 });
 
-                if (!response.ok) {
-                    throw new Error(`Server returned ${response.status}`);
-                }
-
-                // Get JSON response from Flask
                 const data = await response.json();
-
-                // Display Gemini prediction
-                let html = `
-                    <h3>Prediction: ${data.birdorplane}</h3>
-                `;
-
-                // If Gemini identified an aircraft
-                if (data.birdorplane === "aircraft") {
-
-                    const flights = data.nearby_aircraft;
-
-                    if (!flights || flights.length === 0) {
-                        html += `<p>No nearby aircraft found.</p>`;
-                    } else {
-                        html += `
-                            <h3>Nearby Aircraft (${flights.length})</h3>
-                        `;
-
-                        flights.forEach((flight) => {
-                            html += `
-                                <div class="flight-card">
-                                    <h4>${flight.callsign}</h4>
-                                    <p><strong>Latitude:</strong> ${flight.latitude}</p>
-                                    <p><strong>Longitude:</strong> ${flight.longitude}</p>
-                                    <p><strong>Altitude:</strong> ${flight.altitude.toFixed(0)} ft</p>
-                                    <p><strong>Speed:</strong> ${flight.speed.toFixed(1)} mph</p>
-                                    <p><strong>Category:</strong> ${flight.category}</p>
-                                </div>
-                            `;
-                        });
-                    }
+                if (!response.ok) {
+                    throw new Error(data.error || `Server returned ${response.status}`);
                 }
-
-                resultContainer.innerHTML = html;
+                renderResult(data);
 
             } catch (error) {
                 console.error('Upload error:', error);
-
-                resultContainer.innerHTML = `
-                    <p><strong>Error:</strong> ${error.message}</p>
-                `;
+                resultContainer.textContent = `Error: ${error.message}`;
             }
         });
     </script>
