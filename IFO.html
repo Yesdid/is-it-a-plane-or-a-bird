@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="UTF-8">
+        <title>IFO - Identifying Flying Objects</title>
+        <link rel="stylesheet" href="IFO.css">
+    </head>
+    <body>
+        <h1>It's a bird! It's a plane! No, it's...</h1>
+        <div class ="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Take a Photo!</h2>
+                    <label for="webcam" class="photo-btn">Open Camera</label>
+                    <video id="webcam" width="640" height="480" autoplay playsinline></video>
+                    <label for="file-upload" class="photo-btn">Upload File</label>
+                    <input type="file" id="file-upload" accept="image/*" capture="environment" style="display: none;">
+                </div>
+                <div class="col-md-6">
+                    <h2>Prediction Result</h2>
+                    <div id="result"></div>
+                </div>
+            </div>
+        </div>
+        <script src="IFO.js"></script>
+    </body>
+</html>
