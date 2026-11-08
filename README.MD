@@ -53,14 +53,14 @@ Running the frontend:
 In root folder run:
 - python3 -m venv venv
 - source venv/bin/activate
-- ./venv/bin/pip install -r requirements.txt
+- pip install -r requirements.txt
     - If there is a notice saying to update pip, copy the command and paste it in terminal to update pip.
-- ./venv/bin/pip install pillow
+- pip install pillow
 - pip install torch transformers
 - Create / set up .env file in project folder (see section named "Setting up .env")
 
 Running the backend:
-- Run: ./venv/bin/python api/app.py
+- Run: python api/app.py
 
 Running the frontend:
 - Open a new terminal
