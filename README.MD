@@ -20,6 +20,7 @@ This program analyzes an image of a flying object and tells you if its a bird, p
 ## Setting up .env:
 .env.example --- copy this into .env using:
 - cp .env.example .env
+
 In .env, replace enter_id and enter_key with your your own keys:
 - OPENSKY_CLIENT_ID & OPENSKY_CLIENT_SECRET: https://opensky-network.org/my-opensky/account 
     - Create an account by following the link and generate your id and secret
