@@ -1,2 +1,5 @@
 .env
 venv/
+__pyache__/
+*.pyc
+api/__pycache__/

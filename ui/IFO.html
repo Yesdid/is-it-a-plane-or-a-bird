@@ -1,26 +1,109 @@
 <!DOCTYPE html>
-    <head>
-        <meta charset="UTF-8">
-        <title>IFO - Identifying Flying Objects</title>
-        <link rel="stylesheet" href="IFO.css">
-    </head>
-    <body>
-        <h1>It's a bird! It's a plane! No, it's...</h1>
-        <div class ="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h2>Take a Photo!</h2>
-                    <label for="webcam" class="photo-btn">Open Camera</label>
-                    <video id="webcam" width="640" height="480" autoplay playsinline></video>
-                    <label for="file-upload" class="photo-btn">Upload File</label>
-                    <input type="file" id="file-upload" accept="image/*" capture="environment" style="display: none;">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Is It a Plane or a Bird?</title>
+
+    <link rel="stylesheet" href="IFO.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <main class="main-container">
+        <section class="hero">
+            <h1>
+                It's a plane!<br>
+                It's a bird!
+                It's a ... 🛸
+            </h1>
+        </section>
+        <section class="content-grid">
+            <div class="panel upload-panel">
+                <div class="panel-heading">
+                    <div>
+                        <p class="section-number">UPLOAD AN UFO</p>
+                        <h2>Upload a Photo</h2>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <h2>Prediction Result</h2>
-                    <div id="result"></div>
+                <label for="camera-source" class="upload-area">
+                    <div class="upload-icon">🖼️</div>
+                    <span class="camera-btn">Upload Image</span>
+                    <span class="upload-hint">
+                        Supports JPG, PNG and other image formats
+                    </span>
+                </label>
+                <input
+                    type="file"
+                    id="camera-source"
+                    accept="image/*"
+                    capture="environment"
+                    hidden
+                >
+                <div id="image-preview" class="image-preview hidden">
+                    <div class="preview-heading">
+                        <h3>Uploaded Image</h3>
+                    </div>
+                    <img id="preview-img" src="" alt="Uploaded image preview">
                 </div>
             </div>
-        </div>
-        <script src="IFO.js"></script>
-    </body>
+            <div class="panel results-panel">
+                <div class="panel-heading">
+                    <div>
+                        <p class="section-number">RESULTS</p>
+                        <h2>Prediction Results</h2>
+                    </div>
+                </div>
+                <p class="panel-description">
+                    UFO results will appear here.
+                </p>
+                <div id="empty-state" class="empty-state">
+                    <div class="empty-icon">☁️</div>
+                    <h3>Nothing to see yet</h3>
+                    <p>Upload a photo to get started.</p>
+                </div>
+                <div id="loading-state" class="loading-state hidden">
+                    <div class="spinner"></div>
+                    <h3>Analyzing your image...</h3>
+                    <p>AI is examining your photo. This may take a moment.</p>
+                </div>
+                <div id="error-state" class="error-state hidden">
+                    <h3>Something went wrong</h3>
+                    <p id="error-message"></p>
+                </div>
+                <div id="result" class="result hidden">
+                    <div class="prediction-box">
+                        <p class="result-label">IDENTIFICATION</p>
+                        <h2 id="prediction"></h2>
+                        <p id="prediction-description"></p>
+                    </div>
+                    <div id="aircraft-section" class="data-section hidden">
+                        <div class="data-heading">
+                            <h3>Nearby Aircraft</h3>
+                            <span id="aircraft-count" class="count-badge">0</span>
+                        </div>
+                        <div id="aircraft-list"></div>
+                    </div>
+                    <div id="bird-section" class="data-section hidden">
+                        <div class="data-heading">
+                            <h3>Bird Predictions</h3>
+                            <span id="bird-count" class="count-badge">0</span>
+                        </div>
+                        <div id="bird-list"></div>
+                    </div>
+                    <div id="other-section" class="data-section hidden">
+                        <p>No bird or aircraft was identified in this image.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer>
+            <p>Identify Flying Objects · Powered by Gemini, OpenSky, and Bird Species Classifier</p>
+        </footer>
+    </main>
+    <script src="IFO.js"></script>
+</body>
 </html>
