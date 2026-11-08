@@ -88,7 +88,6 @@ def get_nearby_aircraft():
             lon, lat = flight[5], flight[6]
             alt = flight[7]*3.28084
             speed = flight[9]*2.237
-            category = flight[17]
 
             nearby_flights.append({
                 "callsign": callsign,
@@ -96,7 +95,6 @@ def get_nearby_aircraft():
                 "longitude": lon,
                 "altitude": alt,
                 "speed": speed,
-                "category": category
             })
             print(f"Flight: {callsign}")
             print(f"   Coords: ({lat}, {lon}) | Altitude: {alt}m | Speed: {speed} mph\n")
