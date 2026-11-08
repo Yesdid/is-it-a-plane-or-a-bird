@@ -18,6 +18,7 @@ if base_dir not in sys.path:
     sys.path.insert(0, base_dir)
 
 from openskyPlane import get_nearby_aircraft
+from bird_classifier import analyze_image
 
 # GETTING IMAGE FROM FRONTEND
 
@@ -34,7 +35,11 @@ def upload_image():
     if file.filename == '' or file is None:
         return jsonify({'error': 'No selected file'}), 400
 
-    img = Image.open(file.stream)
+    try:
+        with Image.open(file.stream) as uploaded_image:
+            img = uploaded_image.convert("RGB")
+    except OSError:
+        return jsonify({"error": "Uploaded file is not a valid image"}), 400
 
     response = client.models.generate_content(
         model="gemini-3.8-flash",
@@ -48,6 +53,9 @@ def upload_image():
         ),
     )
 
+    if response.parsed is None:
+        return jsonify({"error": "Gemini did not return a valid classification"}), 502
+
     label = response.parsed.birdorplane
 
     # Only search for nearby aircraft if Gemini identifies an aircraft
@@ -59,12 +67,18 @@ def upload_image():
             "nearby_aircraft": nearby_flights
         }), 200
 
-    # Birds and other objects don't need an OpenSky API call
-    return jsonify({
-        "birdorplane": label,
-        "nearby_aircraft": []
-    }), 200
+    if label == "bird":
+        bird_predictions = analyze_image(img)
 
+        return jsonify({
+            "birdorplane": label,
+            "bird_predictions": bird_predictions
+        }), 200
+
+    return jsonify({
+        "birdorplane": "other",
+        "message": "The image does not appear to show a bird or aircraft."
+    }), 200
 
 
 # Force Python to find security certificates on macOS
