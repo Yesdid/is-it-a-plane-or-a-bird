@@ -39,6 +39,7 @@ In root folder run:
 - pip install -r requirements.txt
     - If there is a notice saying to update pip, copy the command and paste it in terminal to update pip.
 - pip install pillow
+- pip install torch transformers
 - Create / set up .env file in project folder (see section named "Setting up .env")
 
 Running the backend:
@@ -55,6 +56,7 @@ In root folder run:
 - ./venv/bin/pip install -r requirements.txt
     - If there is a notice saying to update pip, copy the command and paste it in terminal to update pip.
 - ./venv/bin/pip install pillow
+- pip install torch transformers
 - Create / set up .env file in project folder (see section named "Setting up .env")
 
 Running the backend:
