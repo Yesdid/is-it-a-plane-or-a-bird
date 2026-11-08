@@ -1,4 +1,5 @@
 import os
+import sys
 import certifi
 import time
 from dotenv import load_dotenv
@@ -11,6 +12,12 @@ import json
 from google.genai.errors import ServerError
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if base_dir not in sys.path:
+    sys.path.insert(0, base_dir)
+
+from openskyPlane import get_nearby_aircraft
 
 # GETTING IMAGE FROM FRONTEND
 
@@ -28,24 +35,44 @@ def upload_image():
         return jsonify({'error': 'No selected file'}), 400
 
     img = Image.open(file.stream)
+
     response = client.models.generate_content(
         model="gemini-3.8-flash",
-        contents=[img, "Classify whether the primary object in the image is a bird, aircraft, or neither"],
+        contents=[
+            img,
+            "Classify whether the primary object in the image is a bird, aircraft, or neither"
+        ],
         config=types.GenerateContentConfig(
             response_mime_type="application/json",
             response_schema=PictureAnalysis,
         ),
     )
+
     label = response.parsed.birdorplane
-    return jsonify({"birdorplane": label}), 200
+
+    # Only search for nearby aircraft if Gemini identifies an aircraft
+    if label == "aircraft":
+        nearby_flights = get_nearby_aircraft()
+
+        return jsonify({
+            "birdorplane": label,
+            "nearby_aircraft": nearby_flights
+        }), 200
+
+    # Birds and other objects don't need an OpenSky API call
+    return jsonify({
+        "birdorplane": label,
+        "nearby_aircraft": []
+    }), 200
+
+
 
 # Force Python to find security certificates on macOS
 os.environ['SSL_CERT_FILE'] = certifi.where()
 
 # Find the absolute path to the .env file up one directory level
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 dotenv_path = os.path.join(base_dir, '.env')
-load_dotenv(dotenv_path)
+load_dotenv(dotenv_path, override=True)
 
 # Verify the key actually loaded before hitting the network
 if not os.environ.get("GEMINI_API_KEY"):

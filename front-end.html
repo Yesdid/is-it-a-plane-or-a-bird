@@ -55,43 +55,73 @@
 
         <!-- implementing js for backend-->>
         <script>
-            const cameraInput = document.getElementById('camera-source');
-            const resultContainer = document.getElementById('result');
+        const cameraInput = document.getElementById('camera-source');
+        const resultContainer = document.getElementById('result');
 
-            cameraInput.addEventListener('change', async (event) => {
-                const file = event.target.files[0];
-                if (!file) return;
+        cameraInput.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
 
-                // 1. Pack the selected image into multipart form-data
-                const formData = new FormData();
-                formData.append('image', file);
+            const formData = new FormData();
+            formData.append('image', file);
 
-                // 2. Visual status indicator
-                resultContainer.innerHTML = '<p class="text-primary">Uploading and processing...</p>';
+            resultContainer.innerHTML = '<p>Uploading and processing...</p>';
 
-                try {
-                    // 3. Send request to backend
-                    const response = await fetch('http://127.0.0.1:5000/upload', {
-                        method: 'POST',
-                        body: formData
-                    });
+            try {
+                const response = await fetch('http://127.0.0.1:5000/upload', {
+                    method: 'POST',
+                    body: formData
+                });
 
-                    if (!response.ok) {
-                        throw new Error(`Server returned ${response.status}: ${response.statusText}`);
-                    }
-
-                    // 4. Render prediction output
-                    const data = await response.json();
-                    resultContainer.innerHTML = `<strong>Prediction:</strong> ${data.birdorplane}`;
-                } catch (error) {
-                    console.error('Upload error:', error);
-                    resultContainer.innerHTML = `
-                        <div class="alert alert-danger">
-                            <strong>Error:</strong> ${error.message}
-                        </div>
-                    `;
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}`);
                 }
-            });
-        </script>
+
+                // Get JSON response from Flask
+                const data = await response.json();
+
+                // Display Gemini prediction
+                let html = `
+                    <h3>Prediction: ${data.birdorplane}</h3>
+                `;
+
+                // If Gemini identified an aircraft
+                if (data.birdorplane === "aircraft") {
+
+                    const flights = data.nearby_aircraft;
+
+                    if (!flights || flights.length === 0) {
+                        html += `<p>No nearby aircraft found.</p>`;
+                    } else {
+                        html += `
+                            <h3>Nearby Aircraft (${flights.length})</h3>
+                        `;
+
+                        flights.forEach((flight) => {
+                            html += `
+                                <div class="flight-card">
+                                    <h4>${flight.callsign}</h4>
+                                    <p><strong>Latitude:</strong> ${flight.latitude}</p>
+                                    <p><strong>Longitude:</strong> ${flight.longitude}</p>
+                                    <p><strong>Altitude:</strong> ${flight.altitude.toFixed(0)} ft</p>
+                                    <p><strong>Speed:</strong> ${flight.speed.toFixed(1)} mph</p>
+                                    <p><strong>Category:</strong> ${flight.category}</p>
+                                </div>
+                            `;
+                        });
+                    }
+                }
+
+                resultContainer.innerHTML = html;
+
+            } catch (error) {
+                console.error('Upload error:', error);
+
+                resultContainer.innerHTML = `
+                    <p><strong>Error:</strong> ${error.message}</p>
+                `;
+            }
+        });
+    </script>
     </body>
 </html>

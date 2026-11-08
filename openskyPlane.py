@@ -64,7 +64,7 @@ def get_nearby_aircraft():
     nearby_flights = []
     location = get_current_location()
     if location is None:
-        exit()
+        return None
     latitude, longitude = location
 
     params = {
@@ -77,7 +77,7 @@ def get_nearby_aircraft():
     response = requests.get(places_url, headers=headers, params=params)
     if response.status_code == 200:
         data = response.json()
-        states = data.get("states", [])
+        states = data.get("states") or []
 
         airborne = [flight for flight in states if flight[8] is False]
         if not airborne:
